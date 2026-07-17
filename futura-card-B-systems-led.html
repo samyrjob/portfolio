@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futura · Solo Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0F26;--panel:#141B3C;--panel-2:#1A2350;
+    --gold:#F5A623;--gold-soft:#FFC96B;--mint:#45E3A4;
+    --text:#EDEEF7;--muted:#969CC2;--line:rgba(255,255,255,0.08);--line-2:rgba(255,255,255,0.14);
+    --font-display:'Space Grotesk',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,monospace;--font-pixel:'Press Start 2P',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--ink);color:var(--text);font-family:var(--font-body);line-height:1.65;-webkit-font-smoothing:antialiased;padding:clamp(20px,5vw,64px) clamp(16px,4vw,40px)}
+  .wrap{max-width:940px;margin:0 auto}
+  .vtag{display:inline-block;font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);border:1px dashed var(--line-2);border-radius:6px;padding:3px 9px;margin-bottom:26px}
+
+  .dia{display:inline-block;width:8px;height:8px;background:var(--gold);transform:rotate(45deg);flex:none}
+  .dia.mint{background:var(--mint)}
+
+  .hero{position:relative;overflow:hidden;padding-bottom:clamp(28px,5vw,44px)}
+  .hero::before{content:"";position:absolute;top:-40px;right:-60px;width:340px;height:280px;
+    background-image:repeating-linear-gradient(26.57deg,transparent 0 23px,rgba(245,166,35,0.10) 23px 24px),repeating-linear-gradient(-26.57deg,transparent 0 23px,rgba(69,227,164,0.08) 23px 24px);
+    -webkit-mask-image:radial-gradient(closest-side at 80% 20%,#000,transparent);mask-image:radial-gradient(closest-side at 80% 20%,#000,transparent);pointer-events:none}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-pixel);font-size:11px;color:var(--gold-soft);margin-bottom:26px}
+  h1.headline{font-family:var(--font-display);font-weight:700;font-size:clamp(2.1rem,6.5vw,3.6rem);line-height:1.02;letter-spacing:-0.02em;max-width:17ch;display:block;border:1px solid currentColor;padding:.34em .55em}
+  h1.headline em{color:var(--gold);font-style:normal}
+  p.sub{margin-top:20px;max-width:62ch;color:#C7CBE6;font-size:clamp(1rem,2.1vw,1.12rem)}
+  .links{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.82rem;padding:10px 16px;border-radius:5px;text-decoration:none;border:1px solid var(--line-2);color:var(--text);transition:border-color .18s,background .18s,transform .18s;letter-spacing:.04em}
+  .btn .arw{color:var(--muted);transition:color .18s,transform .18s}
+  .btn:hover{border-color:var(--gold);transform:translateY(-1px)}
+  .btn:hover .arw{color:var(--gold);transform:translate(2px,-2px)}
+  .btn.primary{background:var(--gold);color:#221600;border-color:var(--gold);font-weight:500}
+  .btn.primary .arw{color:#221600}
+  .btn.primary:hover{background:var(--gold-soft);border-color:var(--gold-soft)}
+  .btn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+
+  .flow{display:flex;align-items:stretch;gap:10px;margin-top:38px;flex-wrap:wrap}
+  .flow-node{flex:1 1 180px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .flow-node .n-title{font-family:var(--font-display);font-weight:600;font-size:1rem}
+  .flow-node .n-tech{font-family:var(--font-mono);font-size:0.74rem;color:var(--muted);margin-top:4px}
+  .flow-arrow{align-self:center;color:var(--gold);font-size:1.2rem;flex:none;padding:0 2px}
+
+  section{padding-top:clamp(44px,7vw,72px)}
+  .sec-head{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+  .sec-head .label{font-family:var(--font-body);font-weight:600;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+  .sec-head .rule{flex:1;height:1px;background:var(--line)}
+  .lead{max-width:62ch;color:#C7CBE6;font-size:1.02rem;margin-bottom:6px}
+  .prose{max-width:62ch;color:#BFC4E4;font-size:0.97rem;margin-top:14px}
+  .tech-line{max-width:62ch;font-family:var(--font-mono);font-size:0.78rem;color:var(--muted);margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;transition:border-color .18s,transform .18s,background .18s}
+  .card:hover{border-color:var(--line-2);background:var(--panel-2);transform:translateY(-2px)}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-body);font-weight:600;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .card-title{font-family:var(--font-display);font-weight:600;font-size:1.22rem;line-height:1.2}
+  .card p{margin-top:9px;color:#BFC4E4;font-size:0.95rem}
+  .card .tech{display:block;margin-top:15px;padding-top:13px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:0.76rem;color:var(--muted)}
+
+  .d-fig{margin:24px 0}
+  .d-svg{width:100%;max-width:660px;margin:0 auto;display:block}
+  .d-cap{font-family:var(--font-mono);font-size:0.76rem;color:var(--muted);text-align:center;margin-top:10px}
+  .dt{font-family:var(--font-mono);font-weight:500;font-size:13px}
+  .ds{font-family:var(--font-body);font-weight:400;font-size:12px}
+  .d-arrow{stroke:rgba(255,255,255,0.32);stroke-width:1.5;fill:none}
+  .d-label{font-family:var(--font-mono);font-size:11px;fill:#8B90B8}
+  .d-lgd{font-family:var(--font-mono);font-size:11px;fill:#8B90B8}
+  .db-mint rect{fill:rgba(69,227,164,0.10);stroke:rgba(69,227,164,0.45);stroke-width:1}
+  .db-mint .dt{fill:#BEEBD9}.db-mint .ds{fill:#8FCBB6}
+  .db-gold rect{fill:rgba(245,166,35,0.10);stroke:rgba(245,166,35,0.5);stroke-width:1}
+  .db-gold .dt{fill:#F6D9A6}.db-gold .ds{fill:#CFA871}
+  .db-slate rect{fill:rgba(150,156,194,0.08);stroke:rgba(150,156,194,0.35);stroke-width:1}
+  .db-slate .dt{fill:#C7CBEA}.db-slate .ds{fill:#9297BE}
+  .db-coral rect{fill:rgba(224,120,90,0.13);stroke:rgba(224,120,90,0.5);stroke-width:1}
+  .db-coral .dt{fill:#F1C6B4}.db-coral .ds{fill:#C99B86}
+  .sw-mint{fill:rgba(69,227,164,0.5)}.sw-gold{fill:rgba(245,166,35,0.55)}.sw-slate{fill:rgba(150,156,194,0.45)}
+
+  .stack-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .stack-group:last-of-type{border-bottom:none}
+  .stack-group .g-label{font-family:var(--font-body);font-weight:600;font-size:0.74rem;color:var(--muted);width:130px;flex:none;text-transform:uppercase;letter-spacing:0.08em}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-family:var(--font-mono);font-size:0.78rem;color:#D6D9EE;background:var(--panel);border:1px solid var(--line);padding:4px 11px;border-radius:6px}
+  .role{margin-top:34px;font-family:var(--font-mono);font-size:0.82rem;color:var(--muted);display:flex;gap:10px;align-items:flex-start}
+  .role b{color:var(--gold);font-weight:500}
+
+  @media (max-width:640px){
+    .grid{grid-template-columns:1fr}
+    .flow-arrow{transform:rotate(90deg);padding:2px 0}
+    .stack-group .g-label{width:100%}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.btn .arw{font-size:0}.btn .arw::after{content:"+";font-size:.85rem;display:inline-block;transition:transform .16s}.btn:hover .arw::after{transform:rotate(90deg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow"><span class="dia"></span>FUTURA · SOLO PROJECT</span>
+    <h1 class="headline">A real-time world, <em>engineered end to end</em>.</h1>
+    <p class="sub">A browser-to-desktop multiplayer world inspired by Habbo Hotel: a cryptographically signed desktop client, a distributed real-time backend with a three-way trust model, and an AI pipeline that generates the art. Designed, built, and shipped by one person.</p>
+    <nav class="links">
+      <a class="btn primary" href="https://futura-game.com" target="_blank" rel="noopener">Live site <span class="arw">↗</span></a>
+      <!-- was: href="#" -->
+      <a class="btn" href="https://futura-game.com/#demo" target="_blank" rel="noopener">Watch demo <span class="arw">↗</span></a>
+      <a class="btn" href="https://github.com/samyrjob/piskel-mcp-server" target="_blank" rel="noopener">Piskel MCP <span class="arw">↗</span></a>
+    </nav>
+    <div class="flow">
+      <div class="flow-node"><div class="n-title">Web sign-up</div><div class="n-tech">Angular</div></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-node"><div class="n-title">Signed launcher</div><div class="n-tech">Wails · Go + Svelte</div></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-node"><div class="n-title">Live world</div><div class="n-tech">Java Swing</div></div>
+    </div>
+  </header>
+
+  <!-- SECURE DELIVERY (leads in Version B) -->
+  <section>
+    <div class="sec-head"><span class="dia"></span><span class="label">Secure desktop delivery</span><span class="rule"></span></div>
+    <p class="lead">The client cannot simply be downloaded and run. It has to prove who you are, and that it has not been tampered with.</p>
+
+    <figure class="d-fig">
+      <svg class="d-svg" viewBox="0 0 680 552" role="img" aria-label="Authentication flow from browser SSO to in-game session">
+        <defs><marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <g class="db-slate"><rect x="150" y="40" width="380" height="56" rx="8"/><text class="dt" x="340" y="62" text-anchor="middle" dominant-baseline="central">Deep link with SSO token</text><text class="ds" x="340" y="80" text-anchor="middle" dominant-baseline="central">futura://launch?token=… (one-time)</text></g>
+        <line x1="340" y1="96" x2="340" y2="114" class="d-arrow" marker-end="url(#ar1)"/>
+        <g class="db-mint"><rect x="150" y="116" width="380" height="56" rx="8"/><text class="dt" x="340" y="138" text-anchor="middle" dominant-baseline="central">POST /auth/handshake</text><text class="ds" x="340" y="156" text-anchor="middle" dominant-baseline="central">SSO + device fingerprint</text></g>
+        <line x1="340" y1="172" x2="340" y2="190" class="d-arrow" marker-end="url(#ar1)"/>
+        <g class="db-gold"><rect x="150" y="192" width="380" height="56" rx="8"/><text class="dt" x="340" y="214" text-anchor="middle" dominant-baseline="central">Refresh + access tokens</text><text class="ds" x="340" y="232" text-anchor="middle" dominant-baseline="central">30-day disk · 15-min RAM</text></g>
+        <line x1="340" y1="248" x2="340" y2="266" class="d-arrow" marker-end="url(#ar1)"/>
+        <g class="db-mint"><rect x="150" y="268" width="380" height="56" rx="8"/><text class="dt" x="340" y="290" text-anchor="middle" dominant-baseline="central">POST /auth/exchange</text><text class="ds" x="340" y="308" text-anchor="middle" dominant-baseline="central">bearer access JWT</text></g>
+        <line x1="340" y1="324" x2="340" y2="342" class="d-arrow" marker-end="url(#ar1)"/>
+        <g class="db-gold"><rect x="150" y="344" width="380" height="56" rx="8"/><text class="dt" x="340" y="366" text-anchor="middle" dominant-baseline="central">Game JWT minted</text><text class="ds" x="340" y="384" text-anchor="middle" dominant-baseline="central">60-second EdDSA token</text></g>
+        <line x1="340" y1="400" x2="340" y2="418" class="d-arrow" marker-end="url(#ar1)"/>
+        <g class="db-slate"><rect x="150" y="420" width="380" height="56" rx="8"/><text class="dt" x="340" y="442" text-anchor="middle" dominant-baseline="central">Piped to Java client via stdin</text><text class="ds" x="340" y="460" text-anchor="middle" dominant-baseline="central">game JWT + refresh, then EOF</text></g>
+        <rect class="sw-mint" x="150" y="512" width="12" height="12" rx="3"/><text class="d-lgd" x="168" y="522">Backend call</text>
+        <rect class="sw-gold" x="290" y="512" width="12" height="12" rx="3"/><text class="d-lgd" x="308" y="522">Token held by launcher</text>
+        <rect class="sw-slate" x="490" y="512" width="12" height="12" rx="3"/><text class="d-lgd" x="508" y="522">Boundary</text>
+      </svg>
+      <figcaption class="d-cap">Authentication: browser SSO to in-game session</figcaption>
+    </figure>
+
+    <p class="prose">A one-time SSO token from the deep link is exchanged for a rotating 30-day refresh token (DPAPI-encrypted on disk) and a short-lived access JWT. Hitting Play trades that for a 60-second Ed25519 game JWT, handed to the Java client over stdin so it never shows up in a process listing. Four token types, each scoped to the narrowest lifetime its job allows.</p>
+
+    <figure class="d-fig">
+      <svg class="d-svg" viewBox="0 0 680 552" role="img" aria-label="Download, verify and install flow">
+        <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <g class="db-mint"><rect x="150" y="40" width="380" height="56" rx="8"/><text class="dt" x="340" y="62" text-anchor="middle" dominant-baseline="central">GET /api/launcher/manifest</text><text class="ds" x="340" y="80" text-anchor="middle" dominant-baseline="central">bearer access JWT</text></g>
+        <line x1="340" y1="96" x2="340" y2="114" class="d-arrow" marker-end="url(#ar2)"/>
+        <g class="db-mint"><rect x="150" y="116" width="380" height="56" rx="8"/><text class="dt" x="340" y="138" text-anchor="middle" dominant-baseline="central">Download from CloudFront</text><text class="ds" x="340" y="156" text-anchor="middle" dominant-baseline="central">signed URL · range-resumable</text></g>
+        <line x1="340" y1="172" x2="340" y2="190" class="d-arrow" marker-end="url(#ar2)"/>
+        <g class="db-gold"><rect x="150" y="192" width="380" height="56" rx="8"/><text class="dt" x="340" y="214" text-anchor="middle" dominant-baseline="central">Streaming SHA-256 check</text><text class="ds" x="340" y="232" text-anchor="middle" dominant-baseline="central">matches manifest hash</text></g>
+        <line x1="340" y1="248" x2="340" y2="266" class="d-arrow" marker-end="url(#ar2)"/>
+        <g class="db-gold"><rect x="150" y="268" width="380" height="56" rx="8"/><text class="dt" x="340" y="290" text-anchor="middle" dominant-baseline="central">Ed25519 verify manifest</text><text class="ds" x="340" y="308" text-anchor="middle" dominant-baseline="central">5 invariants, before extract</text></g>
+        <line x1="340" y1="324" x2="340" y2="342" class="d-arrow" marker-end="url(#ar2)"/>
+        <g class="db-slate"><rect x="150" y="344" width="380" height="56" rx="8"/><text class="dt" x="340" y="366" text-anchor="middle" dominant-baseline="central">Extract to staging</text><text class="ds" x="340" y="384" text-anchor="middle" dominant-baseline="central">zip-slip + zip-bomb guards</text></g>
+        <line x1="340" y1="400" x2="340" y2="418" class="d-arrow" marker-end="url(#ar2)"/>
+        <g class="db-slate"><rect x="150" y="420" width="380" height="56" rx="8"/><text class="dt" x="340" y="442" text-anchor="middle" dominant-baseline="central">Atomic rename → install</text><text class="ds" x="340" y="460" text-anchor="middle" dominant-baseline="central">rotate version, purge old</text></g>
+        <rect class="sw-mint" x="150" y="512" width="12" height="12" rx="3"/><text class="d-lgd" x="168" y="522">Network fetch</text>
+        <rect class="sw-gold" x="300" y="512" width="12" height="12" rx="3"/><text class="d-lgd" x="318" y="522">Integrity gate</text>
+        <rect class="sw-slate" x="452" y="512" width="12" height="12" rx="3"/><text class="d-lgd" x="470" y="522">Disk write</text>
+      </svg>
+      <figcaption class="d-cap">Delivery: signed manifest to atomic install</figcaption>
+    </figure>
+
+    <p class="prose">The package streams from CloudFront as a resumable download with a running SHA-256 check, then is verified against an Ed25519-signed manifest: kid, signature, version, hash and size. These five invariants make downgrade and key-swap attacks fail closed. Only then does it extract (guarded against zip-slip and zip-bombs) and atomically install, keeping the last build for rollback.</p>
+    <p class="tech-line">Wails (Go + Svelte) · AWS S3 / CloudFront / KMS · Ed25519</p>
+  </section>
+
+  <!-- BACKEND -->
+  <section>
+    <div class="sec-head"><span class="dia"></span><span class="label">Distributed real-time backend</span><span class="rule"></span></div>
+    <p class="lead">Three callers, three trust mechanisms. The backend never treats them the same.</p>
+
+    <figure class="d-fig">
+      <svg class="d-svg" viewBox="0 0 680 390" role="img" aria-label="Three-tier trust architecture">
+        <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <g class="db-gold"><rect x="40" y="140" width="145" height="60" rx="8"/><text class="dt" x="112" y="164" text-anchor="middle" dominant-baseline="central">Game client</text><text class="ds" x="112" y="184" text-anchor="middle" dominant-baseline="central">Java Swing</text></g>
+        <g class="db-coral"><rect x="268" y="140" width="150" height="60" rx="8"/><text class="dt" x="343" y="164" text-anchor="middle" dominant-baseline="central">Game server</text><text class="ds" x="343" y="184" text-anchor="middle" dominant-baseline="central">TCP socket :5555</text></g>
+        <g class="db-mint"><rect x="500" y="140" width="140" height="60" rx="8"/><text class="dt" x="570" y="164" text-anchor="middle" dominant-baseline="central">Spring backend</text><text class="ds" x="570" y="184" text-anchor="middle" dominant-baseline="central">source of truth</text></g>
+        <g class="db-slate"><rect x="268" y="292" width="150" height="56" rx="8"/><text class="dt" x="343" y="314" text-anchor="middle" dominant-baseline="central">Kafka</text><text class="ds" x="343" y="332" text-anchor="middle" dominant-baseline="central">audit trail</text></g>
+        <line x1="185" y1="170" x2="262" y2="170" class="d-arrow" marker-end="url(#ar3)"/><text class="d-label" x="223" y="161" text-anchor="middle">Ed25519 JWT</text>
+        <line x1="418" y1="170" x2="494" y2="170" class="d-arrow" marker-end="url(#ar3)"/><text class="d-label" x="459" y="161" text-anchor="middle">HMAC writes</text>
+        <path d="M112 140 L112 58 L570 58 L570 134" class="d-arrow" marker-end="url(#ar3)"/><text class="d-label" x="341" y="49" text-anchor="middle">game JWT reads (~60s)</text>
+        <line x1="343" y1="200" x2="343" y2="286" class="d-arrow" marker-end="url(#ar3)"/><text class="d-label" x="353" y="248" text-anchor="start">trade audit</text>
+      </svg>
+      <figcaption class="d-cap">One backend, three front doors</figcaption>
+    </figure>
+
+    <p class="prose">The web reads with a 24-hour session JWT; the game client reads directly with its 60-second game JWT, checked at the backend and again locally by the game server at join. Writes (trades, inventory, credits) come only from the game server, HMAC-signed with a 30-second replay window, so a patched client can't forge state. Live movement and chat run on a custom line-based TCP protocol; Kafka carries a fire-and-forget trade audit trail, Redis caches the profile page, and STOMP pushes room events to the browser.</p>
+    <p class="tech-line">Java · Spring Boot · MySQL · Kafka · Redis · STOMP</p>
+  </section>
+
+  <!-- AI PIPELINE (a pillar, not the headline) -->
+  <section>
+    <div class="sec-head"><span class="dia mint"></span><span class="label">AI content pipeline</span><span class="rule"></span></div>
+    <p class="lead">All the art that fills the world comes from the project's own pipeline. It is one of the three core systems, not an add-on.</p>
+    <div class="grid">
+      <article class="card">
+        <span class="kicker"><span class="dia"></span>Pipeline</span>
+        <h3 class="card-title">Prompt to placed item</h3>
+        <p>A text prompt becomes catalog-ready furniture: image generation (FLUX / nano-banana), two-to-four chained isometric angles for view consistency, then a review step that sets tile size, category, collision, wall-or-floor placement and per-angle offsets before it goes live in-world.</p>
+        <span class="tech">Angular admin app · isometric tile math</span>
+      </article>
+      <article class="card">
+        <span class="kicker"><span class="dia mint"></span>Open source</span>
+        <h3 class="card-title">Piskel MCP recolor engine</h3>
+        <p>A headless, LLM-drivable pixel-art editor with around 50 MCP tools for layers, frames, drawing and export. Its batch recolor generates every avatar combination (hair, eyes, top, trousers, shoes, skin) with perceptual matching that preserves shading and anti-aliasing. Open-source; I'm a contributor.</p>
+        <span class="tech">TypeScript · Model Context Protocol</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section>
+    <div class="sec-head"><span class="dia"></span><span class="label">Built with</span><span class="rule"></span></div>
+    <div class="stack-group"><span class="g-label">Frontend</span><div class="chips"><span class="chip">Angular</span><span class="chip">NgRx</span><span class="chip">TypeScript</span></div></div>
+    <div class="stack-group"><span class="g-label">Desktop</span><div class="chips"><span class="chip">Wails</span><span class="chip">Go</span><span class="chip">Svelte</span><span class="chip">Java Swing</span></div></div>
+    <div class="stack-group"><span class="g-label">Backend</span><div class="chips"><span class="chip">Spring Boot</span><span class="chip">Hibernate</span><span class="chip">MySQL</span><span class="chip">Redis</span><span class="chip">Kafka</span><span class="chip">STOMP</span></div></div>
+    <div class="stack-group"><span class="g-label">Cloud &amp; security</span><div class="chips"><span class="chip">AWS S3</span><span class="chip">CloudFront</span><span class="chip">KMS</span><span class="chip">Ed25519</span><span class="chip">HMAC</span><span class="chip">JWT</span></div></div>
+    <div class="stack-group"><span class="g-label">AI</span><div class="chips"><span class="chip">MCP</span><span class="chip">FLUX</span><span class="chip">Piskel</span></div></div>
+    <p class="role"><span class="dia"></span><span><b>Role, solo:</b> product, art direction, full-stack, desktop client, cloud infrastructure, and the AI content pipeline.</span></p>
+  </section>
+
+</div>
+</body>
+</html>

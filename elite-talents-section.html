@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elite Talents — backend, database &amp; security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0C1017;--panel:#141A24;--panel-2:#1B2231;
+    --ink:#E7EBF3;--ink-2:#9BA6BC;--ink-3:#6B7689;
+    --cyan:#4CC2FF;--cyan-deep:#2A9BD8;--violet:#A78BFA;
+    --line:rgba(255,255,255,0.08);--line-2:rgba(255,255,255,0.14);
+    --font-display:'Sora',system-ui,sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.65;-webkit-font-smoothing:antialiased;padding:clamp(20px,5vw,64px) clamp(16px,4vw,40px)}
+  .wrap{max-width:900px;margin:0 auto}
+  .back{display:inline-block;margin-bottom:26px;font-family:var(--font-mono);font-size:.78rem;color:var(--ink-3);text-decoration:none;transition:color .16s}
+  .back:hover{color:var(--cyan)}
+
+  .eyebrow{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+  h1.headline{font-family:var(--font-display);font-weight:600;font-size:clamp(2rem,5.6vw,3.3rem);line-height:1.08;letter-spacing:-.02em;margin-top:18px;max-width:19ch}
+  p.sub{margin-top:20px;max-width:64ch;color:var(--ink-2);font-size:clamp(1rem,2.1vw,1.12rem)}
+  .links{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.8rem;padding:10px 16px;border-radius:8px;text-decoration:none;border:1px solid var(--line-2);color:var(--ink);transition:border-color .18s,transform .18s,background .18s}
+  .btn .arw{color:var(--ink-3);transition:color .18s,transform .18s}
+  .btn:hover{border-color:var(--cyan);transform:translateY(-1px)}
+  .btn:hover .arw{color:var(--cyan);transform:translate(2px,-2px)}
+  .btn.primary{background:var(--cyan);color:#062537;border-color:var(--cyan);font-weight:500}
+  .btn.primary .arw{color:#062537}
+  .btn.primary:hover{background:#6ACFFF;border-color:#6ACFFF}
+  .btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+  .scope{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;align-items:center}
+  .scope .lbl{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
+  .tag{font-family:var(--font-mono);font-size:.76rem;padding:4px 10px;border-radius:6px;border:1px solid var(--line-2);color:var(--ink)}
+  .tag.mine{border-color:rgba(76,194,255,.4);color:#9BDBFF;background:rgba(76,194,255,.08)}
+  .tag.not{border-color:var(--line);color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+
+  .scale{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:40px;background:var(--panel)}
+  .scell{padding:18px 16px;border-right:1px solid var(--line)}
+  .scell:last-child{border-right:none}
+  .scell .v{font-family:var(--font-mono);font-weight:500;font-size:1.55rem;color:#9BDBFF;letter-spacing:-.01em}
+  .scell .l{font-size:.82rem;color:var(--ink);margin-top:6px;font-weight:500}
+  .scell .c{font-size:.75rem;color:var(--ink-3);margin-top:2px}
+
+  section{padding-top:clamp(44px,7vw,68px)}
+  .sec-head{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+  .sec-head .n{font-family:var(--font-mono);font-size:.72rem;color:var(--cyan);letter-spacing:.1em}
+  .sec-head .label{font-family:var(--font-display);font-weight:600;font-size:1.4rem}
+  .lead{max-width:66ch;color:var(--ink-2);margin-top:12px}
+  .lead b{color:var(--ink);font-weight:500}
+  .lead code{font-family:var(--font-mono);font-size:.86em;background:var(--panel-2);color:#9BDBFF;padding:1px 6px;border-radius:4px}
+
+  .diagram{margin:24px auto 6px;max-width:660px}
+  .diagram svg{width:100%;height:auto;display:block}
+  .caption{font-family:var(--font-mono);font-size:.75rem;color:var(--ink-3);text-align:center;margin:10px auto 0;max-width:64ch;line-height:1.55}
+
+  .principles{margin-top:8px;border-top:1px solid var(--line)}
+  .pr{display:grid;grid-template-columns:210px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .pr .h{font-weight:500;color:var(--ink);display:flex;gap:9px;align-items:baseline}
+  .pr .h .dot{width:7px;height:7px;border-radius:2px;background:var(--cyan);flex:none;transform:translateY(-1px)}
+  .pr .b{color:var(--ink-2);font-size:.96rem}
+  .pr .b code{font-family:var(--font-mono);font-size:.85em;color:#9BDBFF}
+
+  .stack-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .stack-group:last-of-type{border-bottom:none}
+  .stack-group .g{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-3);width:150px;flex:none;text-transform:uppercase;letter-spacing:.06em}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-family:var(--font-mono);font-size:.78rem;color:var(--ink);background:var(--panel);border:1px solid var(--line-2);padding:4px 11px;border-radius:6px}
+
+  .context{margin-top:32px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:.8rem;color:var(--ink-3);line-height:1.7}
+  .context b{color:var(--cyan);font-weight:500}
+
+  @media (max-width:720px){ .scale{grid-template-columns:1fr 1fr} .scell:nth-child(2n){border-right:none} .scell{border-bottom:1px solid var(--line)} }
+  @media (max-width:640px){ .pr{grid-template-columns:1fr;gap:4px} .stack-group .g{width:100%} }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">← Portfolio</a>
+
+  <header>
+    <span class="eyebrow">Startup · backend engineering</span>
+    <h1 class="headline">The backend behind a live recruitment platform.</h1>
+    <p class="sub">Elite Talents lets a manager certify a candidate's real skills, turning a declarative CV into verifiable proof attached by QR code. I designed and built the whole backend: a 165-endpoint Next.js 14 API, the Postgres schema and the security model. The founder drives product and interface. It's live, Toulouse-based, and now onboarding students from recognised business schools.</p>
+    <nav class="links">
+      <a class="btn primary" href="https://elitetalents.fr" target="_blank" rel="noopener">Live platform <span class="arw">↗</span></a>
+      <a class="btn" href="https://www.linkedin.com/company/elitetalents-fr/" target="_blank" rel="noopener">Company <span class="arw">↗</span></a>
+    </nav>
+    <div class="scope">
+      <span class="lbl">My scope</span>
+      <span class="tag mine">API layer</span>
+      <span class="tag mine">Business logic</span>
+      <span class="tag mine">Postgres schema</span>
+      <span class="tag mine">RLS &amp; auth</span>
+      <span class="tag mine">Payments</span>
+      <span class="tag not">Product</span>
+      <span class="tag not">Frontend</span>
+    </div>
+
+    <div class="scale">
+      <div class="scell"><div class="v">165</div><div class="l">API endpoints</div><div class="c">App Router route handlers</div></div>
+      <div class="scell"><div class="v">6</div><div class="l">Actor roles</div><div class="c">candidate → admin</div></div>
+      <div class="scell"><div class="v">50</div><div class="l">Postgres tables</div><div class="c">one schema, owned</div></div>
+      <div class="scell"><div class="v">100%</div><div class="l">Under RLS</div><div class="c">nothing open by default</div></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="n">01</span><span class="label">The backend</span></div>
+    <p class="lead">A <b>Next.js 14 App Router</b> backend I designed and built in full: 165 route handlers spanning six actor types, each with its own flows and dashboards. Well past CRUD: it carries the real logic that makes the product work, in TypeScript, with inputs validated by Zod.</p>
+    <div class="principles">
+      <div class="pr"><div class="h"><span class="dot"></span>API surface</div><div class="b">165 route handlers across candidate, manager, school, company, professor and admin, with dynamic REST segments (<code>[id]</code>, <code>[token]</code>, <code>[candidateId]</code>) and role-aware access on every one.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Scoring engine</div><div class="b">Manager-ranking and composite-index calculators (with persistence) that turn raw evaluations into comparable, ranked candidate scores.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Matching &amp; eligibility</div><div class="b">Candidate-to-role compatibility scoring, eligibility validation, and anti-fraud quota enforcement to keep evaluations honest.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Automation &amp; documents</div><div class="b">Scheduling, email and automation services, cron endpoints, and multi-template PDF generation (brochures, commercial pitches) rendered server-side.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">02</span><span class="label">Data &amp; security model</span></div>
+    <p class="lead">The data layer rests on a two-tier design. The browser reaches Postgres through an anon-key client, where <b>row-level security</b> decides which rows it sees; privileged work runs server-side through a service-role client that bypasses RLS and never reaches the browser. Every table is under RLS, so anything without a policy is closed by default.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 680 300" role="img" aria-labelledby="am-t am-d">
+        <title id="am-t">Supabase access model</title>
+        <desc id="am-d">The browser uses an anon-key client that passes through row-level security policies to reach scoped rows in Postgres; server-side API routes use a service-role client that bypasses RLS.</desc>
+        <defs><marker id="ar-am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5B667D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <rect x="36" y="54" width="176" height="56" rx="8" fill="rgba(76,194,255,0.12)" stroke="rgba(76,194,255,0.5)"/>
+        <text x="124" y="76" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-weight="500" font-size="14" fill="#BFE6FF">Browser client</text>
+        <text x="124" y="94" text-anchor="middle" dominant-baseline="central" font-family="IBM Plex Mono,monospace" font-size="12" fill="#9BA6BC">anon key</text>
+        <rect x="36" y="210" width="176" height="56" rx="8" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.5)"/>
+        <text x="124" y="232" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-weight="500" font-size="14" fill="#C9BCFB">API routes</text>
+        <text x="124" y="250" text-anchor="middle" dominant-baseline="central" font-family="IBM Plex Mono,monospace" font-size="12" fill="#9BA6BC">service role</text>
+        <rect x="286" y="54" width="118" height="56" rx="8" fill="rgba(76,194,255,0.16)" stroke="#4CC2FF"/>
+        <text x="345" y="76" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-weight="500" font-size="14" fill="#BFE6FF">RLS</text>
+        <text x="345" y="94" text-anchor="middle" dominant-baseline="central" font-family="IBM Plex Mono,monospace" font-size="12" fill="#9BA6BC">policies</text>
+        <rect x="498" y="96" width="150" height="150" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.18)"/>
+        <text x="573" y="150" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-weight="500" font-size="14" fill="#E7EBF3">Postgres</text>
+        <text x="573" y="172" text-anchor="middle" dominant-baseline="central" font-family="IBM Plex Mono,monospace" font-size="12" fill="#9BA6BC">50 tables</text>
+        <text x="573" y="191" text-anchor="middle" dominant-baseline="central" font-family="IBM Plex Mono,monospace" font-size="12" fill="#9BDBFF">RLS on all</text>
+        <line x1="212" y1="82" x2="280" y2="82" stroke="#5B667D" stroke-width="1.5" marker-end="url(#ar-am)"/>
+        <line x1="404" y1="82" x2="498" y2="138" stroke="#5B667D" stroke-width="1.5" marker-end="url(#ar-am)"/>
+        <text x="455" y="120" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6B7689">scoped rows</text>
+        <line x1="212" y1="238" x2="498" y2="210" stroke="#5B667D" stroke-width="1.5" marker-end="url(#ar-am)"/>
+        <text x="336" y="255" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="#6B7689">service role · bypasses RLS</text>
+      </svg>
+    </div>
+    <p class="caption">Every table has RLS enabled. 22 carry no client policy and are reachable only through the service-role backend (default-deny); the remaining 28 apply per-user and public-read policies.</p>
+
+    <div class="principles" style="margin-top:26px">
+      <div class="pr"><div class="h"><span class="dot"></span>Two-tier clients</div><div class="b">An anon-key client for user-scoped access under RLS, and a service-role client kept strictly server-side, with <code>httpOnly</code> / <code>secure</code> / <code>sameSite</code> session cookies.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Passwordless &amp; abuse-resistant</div><div class="b">WebAuthn passkeys, rate limiting on login and registration (5 per 15 min, 3 per hour), CSRF protection, bcrypt, and JWT via <code>jose</code>.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Secrets &amp; headers</div><div class="b">The Stripe key lives in Supabase Vault, encrypted and never in the codebase. Hardened headers: HSTS with preload, <code>X-Frame-Options: DENY</code>, <code>nosniff</code>, no production source maps.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">03</span><span class="label">Notable engineering</span></div>
+    <div class="principles">
+      <div class="pr"><div class="h"><span class="dot"></span>Stripe through Postgres</div><div class="b">Payments run through the Supabase Stripe Wrapper: Stripe objects read as foreign tables directly from the database, with the API key held in Vault.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Matching at two tiers</div><div class="b">Trigram fuzzy search in Postgres (<code>pg_trgm</code>) and in the app (Fuse.js), with OpenAI for candidate-to-role matching.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Certification pipeline</div><div class="b">PDF and DOCX CV parsing into structured profiles; manager evaluations issued as QR-linked, verifiable proof, renewable every three months.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">04</span><span class="label">Built with</span></div>
+    <div class="stack-group"><span class="g">Backend</span><div class="chips"><span class="chip">Next.js 14</span><span class="chip">App Router</span><span class="chip">Route Handlers</span><span class="chip">TypeScript</span><span class="chip">Node</span><span class="chip">Zod</span></div></div>
+    <div class="stack-group"><span class="g">Data</span><div class="chips"><span class="chip">Supabase</span><span class="chip">PostgreSQL</span><span class="chip">RLS</span><span class="chip">pgcrypto</span><span class="chip">pg_trgm</span></div></div>
+    <div class="stack-group"><span class="g">Auth &amp; security</span><div class="chips"><span class="chip">NextAuth</span><span class="chip">WebAuthn</span><span class="chip">JWT (jose)</span><span class="chip">bcrypt</span><span class="chip">rate-limiter</span><span class="chip">CSRF</span></div></div>
+    <div class="stack-group"><span class="g">Integrations</span><div class="chips"><span class="chip">Stripe (Wrapper + Vault)</span><span class="chip">OpenAI</span><span class="chip">Resend</span></div></div>
+    <div class="stack-group"><span class="g">Ops</span><div class="chips"><span class="chip">PM2</span><span class="chip">Playwright (E2E)</span></div></div>
+    <p class="context"><b>Founded by Etienne Bourrinet</b> I own the backend, database and security; the founder owns product and frontend. Live at elitetalents.fr. Toulouse, founded 2025, onboarding business-school cohorts.</p>
+  </section>
+
+</div>
+</body>
+</html>

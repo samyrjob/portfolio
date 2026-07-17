@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2YM Chatbot — production RAG assistant for students and programme leaders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F4;
+    --card:#FFFFFF;
+    --ink:#18211E;
+    --ink-2:#54605B;
+    --ink-3:#7C867F;
+    --accent:#0E7A5F;
+    --accent-deep:#0B5F49;
+    --accent-tint:#E4F1EC;
+    --clay:#9A4E2C;
+    --clay-tint:#F5E7DF;
+    --line:#E1E5E1;
+    --line-2:#D2D7D2;
+    --font-display:'Fraunces',Georgia,serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.65;-webkit-font-smoothing:antialiased;padding:clamp(20px,5vw,64px) clamp(16px,4vw,40px)}
+  .wrap{max-width:900px;margin:0 auto}
+  .back{display:inline-block;margin-bottom:26px;font-family:var(--font-mono);font-size:.78rem;color:var(--ink-3);text-decoration:none;transition:color .16s}
+  .back:hover{color:var(--accent)}
+
+  .eyebrow{font-family:var(--font-body);font-weight:600;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep)}
+  h1.headline{font-family:var(--font-display);font-weight:500;font-size:clamp(2.2rem,6vw,3.5rem);line-height:1.05;letter-spacing:-.015em;margin-top:18px;max-width:17ch;display:inline-block;border:1px solid currentColor;padding:.34em .55em}
+  p.sub{margin-top:20px;max-width:64ch;color:var(--ink-2);font-size:clamp(1rem,2.1vw,1.13rem)}
+  .links{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.8rem;padding:10px 16px;border-radius:5px;text-decoration:none;border:1px solid var(--line-2);color:var(--ink);background:var(--card);transition:border-color .18s,transform .18s,background .18s;letter-spacing:.04em}
+  .btn .arw{color:var(--ink-3);transition:color .18s,transform .18s}
+  .btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .btn:hover .arw{color:var(--accent);transform:translate(2px,-2px)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary .arw{color:#fff}
+  .btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .ledger{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:40px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+  .cell{padding:18px 16px;border-right:1px solid var(--line)}
+  .cell:last-child{border-right:none}
+  .cell .val{font-family:var(--font-mono);font-weight:500;font-size:1.5rem;color:var(--accent-deep);letter-spacing:-.01em}
+  .cell .lab{font-size:.82rem;color:var(--ink);margin-top:6px;font-weight:500}
+  .cell .ctx{font-size:.76rem;color:var(--ink-3);margin-top:3px}
+
+  section{padding-top:clamp(44px,7vw,68px)}
+  .sec-head{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+  .sec-head .n{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);letter-spacing:.1em}
+  .sec-head .label{font-family:var(--font-display);font-weight:500;font-size:1.5rem}
+  .lead{max-width:66ch;color:var(--ink-2);margin-top:14px}
+  .lead:first-of-type{margin-top:0}
+  .lead b{color:var(--ink);font-weight:500}
+  .lead code{font-family:var(--font-mono);font-size:.86em;background:var(--accent-tint);color:var(--accent-deep);padding:1px 6px;border-radius:4px}
+
+  .diagram{margin:26px auto 6px;max-width:520px}
+  .diagram svg{width:100%;height:auto;display:block}
+  .dgm .ti{font-family:var(--font-body);font-weight:500;font-size:14px;fill:var(--ink)}
+  .dgm .si{font-family:var(--font-mono);font-size:12px;fill:var(--ink-3)}
+  .dgm .bl{font-family:var(--font-mono);font-size:12px;fill:var(--ink-3)}
+  .caption{font-family:var(--font-mono);font-size:.76rem;color:var(--ink-3);text-align:center;margin:8px auto 0;max-width:60ch;line-height:1.5}
+
+  /* two clients */
+  .connector{max-width:66ch;color:var(--ink-2);margin:0 0 18px}
+  .connector b{color:var(--ink);font-weight:500}
+  .clients{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .client{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .client .cli-role{font-family:var(--font-body);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:4px}
+  .client h4{font-family:var(--font-display);font-weight:500;font-size:1.2rem;margin-bottom:12px}
+  .client ul{list-style:none}
+  .client li{position:relative;padding-left:18px;color:var(--ink-2);font-size:.94rem;margin-top:10px;line-height:1.5}
+  .client li:first-child{margin-top:0}
+  .client li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .client li b{color:var(--ink);font-weight:500}
+
+  .principles{margin-top:8px;border-top:1px solid var(--line)}
+  .pr{display:grid;grid-template-columns:200px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .pr .h{font-weight:500;color:var(--ink);display:flex;gap:9px;align-items:baseline}
+  .pr .h .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;transform:translateY(-1px)}
+  .pr .b{color:var(--ink-2);font-size:.96rem}
+  .pr .b code{font-family:var(--font-mono);font-size:.85em;color:var(--accent-deep)}
+
+  .note{margin-top:20px;border-left:2px solid var(--clay);background:var(--clay-tint);padding:14px 18px;border-radius:0 8px 8px 0}
+  .note .t{font-family:var(--font-body);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);margin-bottom:6px}
+  .note p{color:var(--ink-2);font-size:.94rem}
+
+  .stack-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .stack-group:last-of-type{border-bottom:none}
+  .stack-group .g{font-family:var(--font-body);font-weight:600;font-size:.74rem;color:var(--ink-3);width:140px;flex:none;text-transform:uppercase;letter-spacing:.06em}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-family:var(--font-mono);font-size:.78rem;color:var(--ink);background:var(--card);border:1px solid var(--line-2);padding:4px 11px;border-radius:6px}
+
+  .context{margin-top:32px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:.8rem;color:var(--ink-3);line-height:1.7}
+  .context b{color:var(--accent-deep);font-weight:500}
+
+  @media (max-width:720px){
+    .ledger{grid-template-columns:1fr 1fr}
+    .cell:nth-child(2n){border-right:none}
+    .cell{border-bottom:1px solid var(--line)}
+    .clients{grid-template-columns:1fr}
+    .pr{grid-template-columns:1fr;gap:4px}
+  }
+  @media (max-width:440px){ .ledger{grid-template-columns:1fr} .cell{border-right:none} }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.btn .arw{font-size:0}.btn .arw::after{content:"+";font-size:.85rem;display:inline-block;transition:transform .16s}.btn:hover .arw::after{transform:rotate(90deg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">← Portfolio</a>
+
+  <header>
+    <span class="eyebrow">MSc CS artefact · University of Chester · 2025–26</span>
+    <h1 class="headline">A support assistant that answers before it invents.</h1>
+    <p class="sub">The 2YM Chatbot serves two clients from one system: students get accurate master's-programme answers in seconds, and programme leaders get the repetitive workload deflected, backed by a knowledge base that grows as it runs. When it isn't sure, it escalates to staff rather than hallucinating. Built, deployed, and evaluated with real cohorts by one person, as the placement-year substitute for my MSc.</p>
+    <nav class="links">
+      <a class="btn primary" href="https://uoc2ndyearbot.site" target="_blank" rel="noopener">Live assistant <span class="arw">↗</span></a>
+      <!-- <a class="btn" href="#" target="_blank" rel="noopener">Impact report <span class="arw">↗</span></a>
+      <a class="btn" href="#" target="_blank" rel="noopener">Source <span class="arw">↗</span></a> -->
+    </nav>
+
+    <div class="ledger">
+      <div class="cell"><div class="val">9.4s</div><div class="lab">Median first response</div><div class="ctx">vs ~2-day staff wait</div></div>
+      <div class="cell"><div class="val">33.3%</div><div class="lab">Wouldn't have asked a human</div><div class="ctx">hidden demand captured</div></div>
+      <div class="cell"><div class="val">67.9%</div><div class="lab">Resolved without staff</div><div class="ctx">across 196 live turns</div></div>
+      <div class="cell"><div class="val">9.8%</div><div class="lab">Escalation, closing week</div><div class="ctx">down from 17% as corpus learned</div></div>
+      <div class="cell"><div class="val">~£1.01</div><div class="lab">Total external cost</div><div class="ctx">whole project lifetime</div></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="n">01</span><span class="label">How it works</span></div>
+    <p class="lead">Most questions never reach a language model. Each query is embedded locally with <code>nomic-embed-text</code> via Ollama and matched against a <b>Qdrant</b> vector store. If the best FAQ match clears an empirically-set <code>0.65</code> confidence floor, that vetted answer grounds the reply. Below it, the bot asks a clarifying question or routes the query into a staff queue. It never guesses. DeepSeek is called only for a few lightweight steps per message; retrieval itself, and the avatar's emotional tone, run with no model call at all.</p>
+
+    <div class="diagram">
+      <svg class="dgm" viewBox="0 0 620 456" role="img" aria-labelledby="rag-t rag-d">
+        <title id="rag-t">Retrieval and decision flow</title>
+        <desc id="rag-d">A user question is expanded, embedded locally, and searched against a Qdrant vector store. If the best match scores at or above 0.65 it grounds a persona answer; below that, the bot clarifies or escalates to staff.</desc>
+        <defs><marker id="ar-rag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#9AA3A0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+        <rect x="160" y="20" width="300" height="52" rx="8" fill="#FFFFFF" stroke="#D5DAD8"/>
+        <text class="ti" x="310" y="46" text-anchor="middle" dominant-baseline="central">User question</text>
+        <line x1="310" y1="72" x2="310" y2="88" stroke="#9AA3A0" stroke-width="1.5" marker-end="url(#ar-rag)"/>
+
+        <rect x="160" y="90" width="300" height="52" rx="8" fill="#E4F1EC" stroke="#8FC7B6"/>
+        <text class="ti" fill="#0B5F49" x="310" y="116" text-anchor="middle" dominant-baseline="central">Query expansion (DeepSeek)</text>
+        <line x1="310" y1="142" x2="310" y2="158" stroke="#9AA3A0" stroke-width="1.5" marker-end="url(#ar-rag)"/>
+
+        <rect x="160" y="160" width="300" height="52" rx="8" fill="#FFFFFF" stroke="#D5DAD8"/>
+        <text class="ti" x="310" y="186" text-anchor="middle" dominant-baseline="central">Embed: Ollama nomic-embed</text>
+        <line x1="310" y1="212" x2="310" y2="228" stroke="#9AA3A0" stroke-width="1.5" marker-end="url(#ar-rag)"/>
+
+        <rect x="160" y="230" width="300" height="52" rx="8" fill="#FFFFFF" stroke="#D5DAD8"/>
+        <text class="ti" x="310" y="256" text-anchor="middle" dominant-baseline="central">Qdrant top-k search</text>
+        <line x1="310" y1="282" x2="310" y2="298" stroke="#9AA3A0" stroke-width="1.5" marker-end="url(#ar-rag)"/>
+
+        <rect x="160" y="300" width="300" height="52" rx="8" fill="#EAF3F0" stroke="#0E7A5F"/>
+        <text class="ti" fill="#0B5F49" x="310" y="326" text-anchor="middle" dominant-baseline="central">Best FAQ score ≥ 0.65 ?</text>
+
+        <path d="M280 352 L200 384" fill="none" stroke="#9AA3A0" stroke-width="1.5" marker-end="url(#ar-rag)"/>
+        <text class="bl" x="214" y="366" text-anchor="middle">&lt; 0.65</text>
+        <path d="M340 352 L420 384" fill="none" stroke="#9AA3A0" stroke-width="1.5" marker-end="url(#ar-rag)"/>
+        <text class="bl" x="408" y="366" text-anchor="middle">≥ 0.65</text>
+
+        <rect x="90" y="384" width="210" height="52" rx="8" fill="#F5E7DF" stroke="#DDB49E"/>
+        <text class="ti" fill="#8A4A2C" x="195" y="403" text-anchor="middle" dominant-baseline="central">Clarify / escalate</text>
+        <text class="si" x="195" y="420" text-anchor="middle" dominant-baseline="central">to staff queue</text>
+
+        <rect x="320" y="384" width="210" height="52" rx="8" fill="#E4F1EC" stroke="#8FC7B6"/>
+        <text class="ti" fill="#0B5F49" x="425" y="403" text-anchor="middle" dominant-baseline="central">Grounded answer</text>
+        <text class="si" x="425" y="420" text-anchor="middle" dominant-baseline="central">DeepSeek persona</text>
+      </svg>
+    </div>
+    <p class="caption">LLM calls per message: query expansion · persona answer · emotion classify. Retrieval and avatar tone use no model at all</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">02</span><span class="label">Two clients, one system</span></div>
+    <p class="connector">One retrieval mechanism serves both sides at once: <b>the vetted answer a student receives is the repetitive question a programme leader no longer has to field.</b> Student value is measured from the closing test; staff value from the live production log.</p>
+    <div class="clients">
+      <div class="client">
+        <div class="cli-role">Everyday beneficiaries</div>
+        <h4>Students</h4>
+        <ul>
+          <li><b>9.4s</b> median first answer, any time, versus a ~2-day staff wait</li>
+          <li><b>33.3%</b> would not have asked a human at all: demand that was previously invisible</li>
+          <li><b>4.11/5</b> helpful, and <b>4.17/5</b> as comfortable as asking a person</li>
+          <li><b>83.3%</b> said their question was fully answered</li>
+        </ul>
+      </div>
+      <div class="client">
+        <div class="cli-role">Primary operational users</div>
+        <h4>Programme leaders</h4>
+        <ul>
+          <li><b>67.9%</b> of turns resolved without any staff involvement</li>
+          <li>A corpus that compounds: the top 10 answers absorb <b>63%</b> of demand, and escalations fell from <b>17% to 9.8%</b> across the test as gaps closed</li>
+          <li>Curate the knowledge base via a role-gated admin panel: approve, reuse, or reject with a reason</li>
+          <li>Insight back to the programme: the log surfaced <b>placement security</b> as the student anxiety hotspot</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">
+      <div class="t">What's evidenced vs pending</div>
+      <p>The staff-side value above comes from the live production log, not a projection. Two teacher instruments remain pending, an expert answer-quality rating and a workload survey, both deployed but unreturned at the data freeze. Naturalness also lagged at 3.72/5 ("ChatGPT-like"). Nothing here is overstated.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">03</span><span class="label">Responsible by design</span></div>
+    <div class="principles">
+      <div class="pr"><div class="h"><span class="dot"></span>No hallucination</div><div class="b">Sub-threshold matches <code>escalate</code> or clarify instead of inventing an answer, which is the behaviour students singled out for praise.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Safety branch</div><div class="b">Messages classified as distressed route only to vetted referral content, never LLM-generated wellbeing text.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Deterministic emotion engine</div><div class="b">Avatar tone was refactored out of a flaky LLM call into a pure, unit-tested rule engine: 7 user emotions map to 8 avatar tones with layered overrides. Faster, cheaper and testable.</div></div>
+      <div class="pr"><div class="h"><span class="dot"></span>Role-based access</div><div class="b">Separate Public, Teacher, and Researcher roles. The read-only Researcher dashboard sits behind TOTP and a Tailscale-only port, isolated from public traffic.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">04</span><span class="label">Built with</span></div>
+    <div class="stack-group"><span class="g">Backend</span><div class="chips"><span class="chip">Go (stdlib)</span><span class="chip">PostgreSQL</span><span class="chip">sqlc</span></div></div>
+    <div class="stack-group"><span class="g">Retrieval</span><div class="chips"><span class="chip">Ollama</span><span class="chip">nomic-embed-text</span><span class="chip">Qdrant</span><span class="chip">DeepSeek</span></div></div>
+    <div class="stack-group"><span class="g">Frontend</span><div class="chips"><span class="chip">Go templates</span><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">Tailwind</span></div></div>
+    <div class="stack-group"><span class="g">Infra &amp; security</span><div class="chips"><span class="chip">Docker</span><span class="chip">Hetzner VPS</span><span class="chip">nginx</span><span class="chip">TLS</span><span class="chip">RBAC</span><span class="chip">TOTP</span><span class="chip">Tailscale</span></div></div>
+    <p class="context"><b>Solo development, multi-stakeholder project</b> MSc CS placement-year substitute (module WB7104). Engineered alone, delivered through a 30-week formal reporting cycle with sponsor Dr Alex Fenton, programme-leader users Trina Roberts &amp; Sue Ollerhead and academic supervisor Graham Logan, with scope adapted across seven structured updates. ~848 hours; ~£1.01 total attributable external cost.</p>
+  </section>
+
+</div>
+</body>
+</html>

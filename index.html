@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samy RJOB · Software Engineer</title>
+<meta name="description" content="Software engineer in Manchester building backends, real-time systems and AI products that run in production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F2EC;
+    --card:#FBFAF6;
+    --ink:#191817;
+    --ink-2:#54524C;
+    --ink-3:#8A877E;
+    --line:#E2DFD5;
+    --line-2:#D3CFC2;
+    --gold:#C98A16;
+    --teal:#0E7A5F;
+    --cyan:#1E7BA8;
+    --font-display:'Bricolage Grotesque',system-ui,sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;padding:clamp(20px,5vw,56px) clamp(18px,5vw,40px)}
+  .wrap{max-width:860px;margin:0 auto}
+  a{color:inherit}
+
+  /* header */
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;font-family:var(--font-body);font-weight:600;font-size:.74rem;letter-spacing:.06em;color:var(--ink-3);padding-bottom:16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .top .r{text-transform:uppercase}
+
+  /* hero */
+  .hero{padding:clamp(44px,8vw,88px) 0 clamp(30px,5vw,44px);display:flex;flex-direction:column;align-items:flex-start}.hero .kick{order:2;margin-top:16px}.hero h1{order:1;margin-top:0}.hero .role{order:3}.hero .meta{order:4}.hero .links{order:5}
+  .hero .kick{font-family:var(--font-body);font-weight:600;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+  h1{font-family:var(--font-display);font-weight:700;font-size:clamp(2.1rem,6.5vw,3.6rem);line-height:.98;letter-spacing:-.03em;margin-top:16px;display:inline-block;border:1px solid currentColor;padding:.34em .55em}
+  .role{margin-top:24px;max-width:56ch;font-size:clamp(1.05rem,2.3vw,1.28rem);color:var(--ink);line-height:1.5}
+  .meta{margin-top:20px;font-family:var(--font-mono);font-size:.8rem;color:var(--ink-2);line-height:1.7}
+  .meta .dot{color:var(--line-2);margin:0 8px}
+  .meta .live{color:var(--teal)}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.8rem;padding:10px 15px;border-radius:5px;text-decoration:none;border:1px solid var(--line-2);color:var(--ink);background:var(--card);transition:border-color .16s,transform .16s;letter-spacing:.04em}
+  .btn .a{color:var(--ink-3);font-size:0}.btn .a::after{content:"+";font-size:.85rem;display:inline-block;transition:transform .16s,color .16s}
+  .btn:hover{border-color:var(--ink);transform:translateY(-1px)}
+  .btn:hover .a{color:var(--ink)}.btn:hover .a::after{transform:rotate(90deg)}
+  .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.primary .a{color:var(--paper)}
+  .btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+  /* lede */
+  .lede{max-width:64ch;color:var(--ink-2);font-size:1.02rem;padding:8px 0 0}
+  .lede b{color:var(--ink);font-weight:500}
+
+  /* work */
+  .sec-label{display:flex;align-items:center;gap:12px;margin:clamp(40px,7vw,64px) 0 20px;font-family:var(--font-body);font-weight:600;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+  .sec-label .rule{flex:1;height:1px;background:var(--line)}
+
+  .card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:12px;padding:22px 24px;text-decoration:none;margin-bottom:14px;transition:transform .16s,border-color .16s,box-shadow .16s}
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(25,24,23,.06)}
+  .card .num{font-family:var(--font-mono);font-size:.82rem;color:var(--acc-ink);font-weight:500}
+  .card .name{font-family:var(--font-display);font-weight:600;font-size:1.4rem;line-height:1.1;letter-spacing:-.01em}
+  .card .desc{color:var(--ink-2);font-size:.95rem;margin-top:6px;max-width:52ch}
+  .card .tech{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-3);margin-top:10px}
+  .card .go{font-family:var(--font-mono);font-size:.8rem;color:var(--acc-ink);white-space:nowrap}
+  .card:hover .go .a{margin-left:3px}
+  .card .go .a{transition:margin .16s}
+  .c-futura{--acc:var(--gold);--acc-ink:#9A6B10}
+  .c-2ym{--acc:var(--teal);--acc-ink:#0B5F49}
+  .c-elite{--acc:var(--cyan);--acc-ink:#1A6E96}
+
+  /* contact */
+  .contact{margin-top:clamp(44px,7vw,68px);padding-top:26px;border-top:1px solid var(--line)}
+  .contact h2{font-family:var(--font-display);font-weight:600;font-size:1.5rem;letter-spacing:-.01em}
+  .contact p{color:var(--ink-2);margin-top:8px;max-width:52ch}
+  .contact .links{margin-top:20px}
+  .foot{margin-top:40px;font-family:var(--font-mono);font-size:.72rem;color:var(--ink-3)}
+
+  @media (max-width:600px){
+    .card{grid-template-columns:auto 1fr;gap:8px 16px}
+    .card .go{grid-column:2;justify-self:start;margin-top:4px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <span>SAMY RJOB</span>
+    <span class="r">Software Engineer · Portfolio</span>
+  </div>
+
+  <header class="hero">
+    <span class="kick">Software Engineer</span>
+    <h1>Samy RJOB</h1>
+    <p class="role">I build software that runs in production: backends, real-time systems and AI products, with a strong focus on security.</p>
+    <p class="meta">Manchester, UK <span class="dot">·</span> open to relocation · Chester · Liverpool · Crewe · North West <span class="dot">·</span> <span class="live">available now</span></p>
+    <nav class="links">
+      <a class="btn primary" href="mailto:samy_rjob@proton.me">Email <span class="a">↗</span></a>
+      <a class="btn" href="https://github.com/samyrjob" target="_blank" rel="noopener">GitHub <span class="a">↗</span></a>
+      <a class="btn" href="https://www.linkedin.com/in/samy-rjob-800315176/" target="_blank" rel="noopener">LinkedIn <span class="a">↗</span></a>
+      <a class="btn" href="#" target="_blank" rel="noopener">Résumé (PDF) <span class="a">↗</span></a>
+    </nav>
+  </header>
+
+  <p class="lede">Recent work includes a multiplayer world built solo, a RAG assistant used by university cohorts, and the backend and data layer of a recruitment startup. <b>Three different stacks, and in each one I built and ran the full system.</b></p>
+
+  <div class="sec-label">Selected work <span class="rule"></span> 3 projects</div>
+
+  <a class="card c-futura" href="futura-card-B-systems-led.html">
+    <span class="num">01</span>
+    <div class="body">
+      <div class="name">Futura</div>
+      <div class="desc">A multiplayer pixel world you install and play. Signed desktop client, real-time backend, AI-generated art. Built solo and currently live.</div>
+      <div class="tech">Java · Go · Angular · Spring · AWS · MCP</div>
+    </div>
+    <span class="go">View <span class="a">→</span></span>
+  </a>
+
+  <a class="card c-2ym" href="2ym-chatbot-section.html">
+    <span class="num">02</span>
+    <div class="body">
+      <div class="name">2YM Chatbot</div>
+      <div class="desc">A RAG assistant for students and programme leaders. It answers only when confident and escalates to staff otherwise. Built as my MSc placement-year project.</div>
+      <div class="tech">Go · RAG · PostgreSQL · Ollama · Qdrant · Docker</div>
+    </div>
+    <span class="go">View <span class="a">→</span></span>
+  </a>
+
+  <a class="card c-elite" href="elite-talents-section.html">
+    <span class="num">03</span>
+    <div class="body">
+      <div class="name">Elite Talents</div>
+      <div class="desc">The backend and Postgres security model of a live recruitment platform. The founder of the startup covers product and frontend while I am responsible for everything server-side.</div>
+      <div class="tech">Next.js · Supabase · PostgreSQL · RLS · WebAuthn · Stripe</div>
+    </div>
+    <span class="go">View <span class="a">→</span></span>
+  </a>
+
+  <section class="contact">
+    <h2>Get in touch</h2>
+    <p>I am looking for a software engineering role, based in Manchester and open to relocation within the North West. Email is the best way to reach me.</p>
+    <nav class="links">
+      <a class="btn primary" href="mailto:samy_rjob@proton.me">samy_rjob@proton.me <span class="a">↗</span></a>
+      <a class="btn" href="https://www.linkedin.com/in/samy-rjob-800315176/" target="_blank" rel="noopener">LinkedIn <span class="a">↗</span></a>
+      <a class="btn" href="https://github.com/samyrjob" target="_blank" rel="noopener">GitHub <span class="a">↗</span></a>
+    </nav>
+    <p class="foot">© 2026 Samy RJOB · Manchester, UK</p>
+  </section>
+
+</div>
+</body>
+</html>
