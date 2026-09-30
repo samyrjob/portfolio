@@ -105,7 +105,7 @@
   <header class="hero">
     <span class="eyebrow"><span class="dia"></span>FUTURA · SOLO PROJECT</span>
     <h1 class="headline">A real-time world, <em>engineered end to end</em>.</h1>
-    <p class="sub">A browser-to-desktop multiplayer world inspired by Habbo Hotel: a cryptographically signed desktop client, a distributed real-time backend with a three-way trust model, and an AI pipeline that generates the art. Designed, built, and shipped by one person.</p>
+    <p class="sub">A browser-to-desktop multiplayer world inspired by Habbo Hotel: a cryptographically signed desktop client, a distributed real-time backend with a three-way trust model, an AI pipeline that generates the art, and a CRM whose AI agents live in the world as characters. Designed, built, and shipped by one person.</p>
     <nav class="links">
       <a class="btn primary" href="https://futura-game.com" target="_blank" rel="noopener">Live site <span class="arw">↗</span></a>
       <!-- was: href="#" -->
@@ -196,6 +196,26 @@
 
     <p class="prose">The web reads with a 24-hour session JWT; the game client reads directly with its 60-second game JWT, checked at the backend and again locally by the game server at join. Writes (trades, inventory, credits) come only from the game server, HMAC-signed with a 30-second replay window, so a patched client can't forge state. Live movement and chat run on a custom line-based TCP protocol; Kafka carries a fire-and-forget trade audit trail, Redis caches the profile page, and STOMP pushes room events to the browser.</p>
     <p class="tech-line">Java · Spring Boot · MySQL · Kafka · Redis · STOMP</p>
+  </section>
+
+  <!-- AI AGENTS (Futura Business CRM) -->
+  <section>
+    <div class="sec-head"><span class="dia mint"></span><span class="label">AI agents in a Java backend</span><span class="rule"></span></div>
+    <p class="lead">Futura Business is a CRM whose AI agents walk the world as characters. The agents run inside the Spring Boot backend.</p>
+    <div class="grid">
+      <article class="card">
+        <span class="kicker"><span class="dia"></span>Agent runtime</span>
+        <h3 class="card-title">Agents that call tools</h3>
+        <p>Each agent runs a tool-calling loop: the conversation and tool schemas go to the model, the calls it returns are executed, and the loop repeats until it answers. Agents are declared in FAL, a small agent-definition language with its own hand-written parser and compiler.</p>
+        <span class="tech">Java 21 · Spring Boot</span>
+      </article>
+      <article class="card">
+        <span class="kicker"><span class="dia mint"></span>Human in the loop</span>
+        <h3 class="card-title">Approval before action</h3>
+        <p>Sensitive actions never run on their own. The agent parks the call, the owner sees exactly what it wants to do, and approving executes it with those exact arguments. MCP connectors let an agent use any external tool that speaks the protocol.</p>
+        <span class="tech">MCP · approvals</span>
+      </article>
+    </div>
   </section>
 
   <!-- AI PIPELINE (a pillar, not the headline) -->
